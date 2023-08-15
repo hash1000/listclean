@@ -1,7 +1,9 @@
+"use client";
+
 import {useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Form from "./form";
+import Form from "../components/form";
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);

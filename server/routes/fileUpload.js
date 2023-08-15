@@ -1,28 +1,14 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const {Configuration, OpenAIApi} = require("openai");
-const {Resend} = require("resend");
+const { Configuration, OpenAIApi } = require("openai");
+const { Resend } = require("resend");
 const converter = require("json-2-csv");
 const Queue = require("bull");
 const fs = require("fs");
 const csvParser = require("csv-parser");
-const redis = require("redis");
 
-// Redis configuration
-const redisClient = redis.createClient({
-  host: "localhost",
-  port: 6379,
-});
-
-redisClient.on("error", (err) => {
-  console.error("Redis connection error:", err);
-});
-
-redisClient.on("connect", () => {
-  console.log("Redis Connected");
-});
-
+module.exports = function(redisClient) {
 const excelFileMimeTypes = [
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -89,7 +75,7 @@ async function cleanCompanyNames(companyNames) {
 }
 
 async function saveCleanedCompanyNamesToRedis(email, cleanedCompanyNames) {
-  await redisClient.connect();
+  // await redisClient.connect();
   await redisClient.set(email, JSON.stringify(cleanedCompanyNames), (err) => {
     if (err) {
       console.error("Error saving data to Redis:", err);
@@ -174,7 +160,7 @@ csvQueue.process(async (job) => {
     });
 });
 
-router.post("/formdata", upload.single("file"), (req, res) => {
+router.post("/formdata", upload.single("file"), async (req, res) => {
   const file = req.file;
   const email = req.body.email;
   if (!file) {
@@ -185,4 +171,5 @@ router.post("/formdata", upload.single("file"), (req, res) => {
   res.json({success: true});
 });
 
-module.exports = router;
+return router;
+};

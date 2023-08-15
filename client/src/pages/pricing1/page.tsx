@@ -12,8 +12,6 @@ export default function Pricing() {
                 src="/logos/favicon.png"
                 className="mr-3 h-16 sm:h-12"
                 alt="ListClean Logo"
-                width={41}
-                height={41}
               />
             </Link>
             <div className="w-full md:block md:w-auto">

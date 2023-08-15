@@ -5,20 +5,28 @@ const router = express.Router();
 router.post("/create-payment-intent", async (req, res) => {
   try {
     const {amount, currency, email} = req.body;
-
-    const customer = await stripe.customers.create({
-      email,
+    let customerID = ''
+    const customer = await stripe.customers.search({
+      query: `email:'${email}'`,
     });
+    if (customer.data.length === 0) {
+    const customerData = await stripe.customers.create({
+        email,
+      });
+      customerID = customerData.id;
+    } else {
+      customerID = customer.data[0].id;
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
-      customer: customer.id,
+      customer: customerID,
     });
 
     res.json({
-      success: false,
-      message: "Transaction failed!",
+      success: true,
+      message: "Transaction successfully done!",
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {

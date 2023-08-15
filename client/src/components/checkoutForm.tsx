@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import axios from "axios";
 import Failed from "../../public/logos/failed-icon.svg";
@@ -57,12 +57,12 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
             email,
             file,
           };
-          showToast("Soon sanitized file will be sent to your email");
           await axios.post("http://localhost:8080/formdata", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           });
+          showToast("Soon sanitized file will be sent to your email");
         } catch (error) {
           console.log("error", error);
         }
@@ -100,7 +100,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
           <button
             disabled={!stripe}
             type="submit"
-            className="mt-4 text-white content-center bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 mt-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="mt-4 text-white content-center bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             {isSubmitting ? "Processing..." : "MAKE PAYMENT"}
           </button>
