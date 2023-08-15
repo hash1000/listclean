@@ -1,131 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import {
-  CardCvcElement,
-  CardExpiryElement,
-  CardNumberElement,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js';
-import axios from 'axios';
+import React, {useState} from "react";
+import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
+import axios from "axios";
+import Failed from "../../public/logos/failed-icon.svg";
+import Image from "next/image";
+import {StripeCardElement} from "@stripe/stripe-js";
+import {useToast} from "../utils/toastContext";
 
 interface PaymentFormProps {
-  amount: number; 
+  amount: number;
   email: string;
   file: File;
   name: string;
 }
 
-const CARD_OPTIONS = {
-  iconStyle: 'solid',
-  style: {
-    base: {
-      iconColor: '#c4f0ff',
-      color: 'black',
-      fontWeight: 500,
-      fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
-      fontSize: '16px',
-      fontSmoothing: 'antialiased',
-      ':-webkit-autofill': { color: 'black' },
-      '::placeholder': { color: 'black' },
-    },
-    invalid: {
-      iconColor: '#ffc7ee',
-      color: 'black',
-    },
-  },
-};
-
-
 const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
-  const {amount,email,file,name}=props;
+  const {amount, email, file, name} = props;
   const [success, setSuccess] = useState(false);
-  const stripe = useStripe();
-  const elements = useElements();
+  const [showError, setShowError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const stripe = useStripe()!;
+  const elements = useElements()!;
+  const {showToast} = useToast();
 
+  const CARD_OPTIONS = {
+    hidePostalCode: true,
+  };
 
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!stripe || !elements) {
-      return;
-    }
-
-    const cardNumberElement = elements.getElement(CardNumberElement);
-
-    if (cardNumberElement) {
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardNumberElement,
-      });
-
-      if (!error && paymentMethod) {
-        try {
-          const { id } = paymentMethod;
-          const response = await axios.post('http://localhost:8080/payment', {
-            amount: amount, // Use the amount prop
-            id,
-            email:email,
-          });
-
-          if (response.data.success) {
-            console.log('Successful Payment');
-            setSuccess(true);
-            
-            const formData = {
-              name: name,
-              file: file,
-              email: email,
-            };
-            const response = await axios.post(
-              "http://localhost:8080/formdata",
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-
-          }
-        } catch (error) {
-          console.log('Error:', error);
-        }
-      } else {
-        console.log(error?.message);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    const response = await axios.post(
+      "http://localhost:8080/create-payment-intent",
+      {
+        amount,
+        currency: "usd",
+        email: email,
       }
+    );
+
+    if (response.data.clientSecret) {
+      const clientSecret = response.data.clientSecret;
+      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement) as StripeCardElement,
+        },
+      });
+      if (paymentResult.error) {
+        console.error(paymentResult.error);
+        setShowError(true);
+      } else if (paymentResult.paymentIntent.status === "succeeded") {
+        console.log("Successful Payment");
+        setSuccess(true);
+        try {
+          const formData = {
+            name,
+            email,
+            file,
+          };
+          showToast("Soon sanitized file will be sent to your email");
+          await axios.post("http://localhost:8080/formdata", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } catch (error) {
+          console.log("error", error);
+        }
+      }
+    } else {
+      setShowError(true);
     }
+
+    setIsSubmitting(false);
   };
 
   return (
-    <div className='payment-form'>
-      {!success ? (
-        <form onSubmit={handleSubmit} >
-          <div className='form-group'>
-            <label className='text-black'>Card Number</label>
-            <CardNumberElement options={CARD_OPTIONS} />
-          </div>
-          <div className='form-group'>
-            <label className='text-black'>Expiry Date</label>
-            <CardExpiryElement options={CARD_OPTIONS} />
-          </div>
-          <div className='form-group'>
-            <label className='text-black'>CVC</label>
-            <CardCvcElement options={CARD_OPTIONS} />
-          </div>
-          <div className='form-group'>
-          </div>
-          <button className='group relative 
-                py-2 px-4 border border-transparent text-sm font-medium
-                rounded-md text-white bg-indigo-600
-                focus:outline-none focus:ring-2 focus:ring-offset-2
-                focus:ring-indigo-500'>MAKE PAYMENT</button>
-        </form>
-      ) : (
+    <>
+      {success ? (
         <div>
-          <h2 className='text-blue-800 bg-slate-50'>You Just Made Your Payment</h2>
+          <svg
+            viewBox="0 0 24 24"
+            className="text-green-600 w-16 h-16 mx-auto my-6"
+          >
+            <path
+              fill="currentColor"
+              d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm6.927,8.2-6.845,9.289a1.011,1.011,0,0,1-1.43.188L5.764,13.769a1,1,0,1,1,1.25-1.562l4.076,3.261,6.227-8.451A1,1,0,1,1,18.927,8.2Z"
+            ></path>
+          </svg>
+          <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
+            Payment Done!
+          </h3>
+          <p className="text-gray-600 my-2 text-center">
+            Thank you for completing your secure online payment.
+          </p>
+        </div>
+      ) : (
+        <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+          <CardElement options={CARD_OPTIONS} />
+          <button
+            disabled={!stripe}
+            type="submit"
+            className="mt-4 text-white content-center bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 mt-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            {isSubmitting ? "Processing..." : "MAKE PAYMENT"}
+          </button>
+        </form>
+      )}
+      {showError && (
+        <div className="text-red-700 px-4 py-3 rounded relative" role="alert">
+          <Image className="m-auto" priority src={Failed} alt="Cancel" />
+          <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
+            Transaction failed!
+          </h3>
+          <p className="text-gray-600 my-2 text-center">
+            Please check your card information and try again.
+          </p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

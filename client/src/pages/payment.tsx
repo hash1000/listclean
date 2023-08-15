@@ -1,19 +1,15 @@
+"use client";
 import Modal from "react-modal";
-import { Elements } from "@stripe/react-stripe-js";
+import {Elements} from "@stripe/react-stripe-js";
 import CheckoutForm from "./checkoutForm";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
+import {loadStripe} from "@stripe/stripe-js";
 
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(
-  "pk_test_51NbOT7KnLMFZGTAgz6WvujeOeY0gZhLykXAoigj4n99ECg7y4Fqrv6s8GhSWca3pPQRxuVZuxL8ztaWCi1TN0t9j006Ypz5uZv"
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
 export default function Payment(props: any) {
-  const { amount, email, file, name } = props;
-  const [clientSecret, setClientSecret] = useState(null);
+  const {amount, email, file, name} = props;
 
   const customStyles = {
     content: {
@@ -23,27 +19,12 @@ export default function Payment(props: any) {
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
+      boxShadow:
+        "rgba(0, 0, 0, 0.15) 0px 10px 16px 4px, rgba(0, 0, 0, 0.1) 4px -7px 16px 1px",
       width: "400px",
-      backgroundColor: "transparent",
       border: "none",
     },
   };
-
-  const clientSecretKey = async () => {
-    const { data } = await axios.post(
-      "http://localhost:8080/create-payment-intent",
-      {
-        email: email,
-        amount: amount,
-      }
-    );
-    console.log(data);
-    setClientSecret(data.clientSecret);
-  };
-
-  useEffect(() => {
-    clientSecretKey();
-  }, []);
 
   return (
     <div>
@@ -52,11 +33,9 @@ export default function Payment(props: any) {
         isOpen={props.showModal}
         onRequestClose={props.handleCloseModal}
       >
-        {clientSecret && (
-          <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <CheckoutForm amount={amount} email={email}  file={file} name={name} />
-          </Elements>
-        )}
+        <Elements stripe={stripePromise}>
+          <CheckoutForm amount={amount} email={email} file={file} name={name} />
+        </Elements>
       </Modal>
     </div>
   );

@@ -1,17 +1,13 @@
-import { useState } from "react";
+import {useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Form } from "./form";
+import Form from "./form";
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleModal = () => {
+    setShowModal(!showModal);
   };
 
   return (
@@ -52,15 +48,12 @@ export default function Home() {
               </p>
               <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
                 <button
-                  className="text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-3 text-base text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-lg text-xl bg-gradient-to-br from-emerald to-lightblue text-dark"
-                  onClick={handleOpenModal}
+                  className="listCleanBtn text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-3 text-base text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-lg text-xl bg-gradient-to-br from-emerald to-lightblue text-dark"
+                  onClick={handleModal}
                 >
                   Get Started
                 </button>
-                <Form
-                  handleCloseModal={handleCloseModal}
-                  showModal={showModal}
-                />
+                <Form handleCloseModal={handleModal} showModal={showModal} />
               </div>
               <p className="caption text-slate-11">No credit card required</p>
             </div>
