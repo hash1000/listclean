@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post("/create-payment-intent", async (req, res) => {
   try {
-    const {amount, currency, email} = req.body;
+    const {amount, currency, email, name} = req.body;
     let customerID = ''
     const customer = await stripe.customers.search({
       query: `email:'${email}'`,
@@ -12,6 +12,7 @@ router.post("/create-payment-intent", async (req, res) => {
     if (customer.data.length === 0) {
     const customerData = await stripe.customers.create({
         email,
+        name, 
       });
       customerID = customerData.id;
     } else {
@@ -22,6 +23,7 @@ router.post("/create-payment-intent", async (req, res) => {
       amount,
       currency,
       customer: customerID,
+      description: "List clean payment",
     });
 
     res.json({
