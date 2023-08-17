@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import axios from "axios";
 import Failed from "../../public/logos/failed-icon.svg";
@@ -38,7 +38,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         name,
       }
     );
-
+    const { paymentIntentId } = response.data;
     if (response.data.clientSecret) {
       const clientSecret = response.data.clientSecret;
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
@@ -50,13 +50,13 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         console.error(paymentResult.error);
         setShowError(true);
       } else if (paymentResult.paymentIntent.status === "succeeded") {
-        console.log("Successful Payment");
         setSuccess(true);
         try {
           const formData = {
             name,
             email,
             file,
+            paymentIntentId,
           };
           await axios.post("http://localhost:8080/formdata", formData, {
             headers: {
@@ -101,7 +101,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <CardElement options={CARD_OPTIONS} />
             <button
-              disabled={!stripe}
+              disabled={!stripe || isSubmitting}
               type="submit"
               className="mt-4 text-white content-center bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
