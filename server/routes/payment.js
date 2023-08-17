@@ -25,7 +25,7 @@ router.post("/create-payment-intent", async (req, res) => {
       customer: customerID,
       description: "List clean payment",
     });
-
+    console.log('Transaction successfully', paymentIntent)
     res.json({
       success: true,
       message: "Transaction successfully done!",

@@ -7,6 +7,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Payment from "./payment";
 import {useToast} from "../utils/toastContext";
+import Select, {GroupBase, OptionsOrGroups} from "react-select";
 
 const customStyles = {
   content: {
@@ -57,8 +58,17 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
   const [chk, setChk] = useState<boolean>(false);
   const {showToast} = useToast();
 
+  const options: OptionsOrGroups<unknown, GroupBase<unknown>> | undefined = [
+    {value: "999", label: "0-500 contacts ($9.99)"},
+    {value: "1599", label: "501-1,000 contacts ($15.99)"},
+    {value: "1899", label: "1,001-2,000 contacts ($18.99)"},
+    {value: "2499", label: "2,001-4,000 contacts ($24.99)"},
+    {value: "2799", label: "4,001-8,000 contacts ($27.99)"},
+    {value: "2999", label: "8,001-10,000 contacts ($29.99)"},
+    {value: "3599", label: "10,001-15,000 contacts ($35.99)"},
+  ];
+
   const {
-    register,
     handleSubmit,
     formState: {errors},
   } = useForm({
@@ -67,9 +77,13 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
 
   useEffect(() => {
     if (
-      ((price === "100" && numLines < 200) ||
-        (price === "200" && numLines < 600) ||
-        (price === "300" && numLines < 2000)) &&
+      ((price === "999" && numLines >= 0 && numLines <= 500) ||
+        (price === "1599" && numLines >= 501 && numLines <= 1000) ||
+        (price === "1899" && numLines >= 1001 && numLines <= 2000) ||
+        (price === "2499" && numLines >= 2001 && numLines <= 4000) ||
+        (price === "2799" && numLines >= 4001 && numLines <= 8000) ||
+        (price === "2999" && numLines >= 8001 && numLines <= 10000) ||
+        (price === "3599" && numLines >= 10001 && numLines <= 15000)) &&
       name &&
       email
     ) {
@@ -95,7 +109,7 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
     const selectedFile = event.target.files[0];
 
     if (!selectedFile) {
-      showToast("No file selected, do nothing.");
+      showToast("Please select file");
       return;
     }
 
@@ -123,19 +137,13 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
     }
   };
 
-  const handlePriceChange = (event: any) => {
-    setPrice(event.target.value);
-  };
-
   const handleChangeChk = (event: any) => {
     setChk(event.target.checked);
   };
 
   const onSubmit = (data: any) => {
-    // Handle form submission
     try {
       validationSchema.validate(data, {abortEarly: false});
-      // Proceed with submission or display error messages
     } catch (error) {
       console.error("Validation failed:", error);
     }
@@ -169,7 +177,7 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
                 placeholder="Name"
               />
             </div>
-            <p>{errors.name?.message}</p>
+            <p className="err-message">{errors.name?.message}</p>
             <br />
             <div>
               <label className="text-gray-500 font-light mt-4 dark:text-gray-50">
@@ -191,7 +199,7 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
                 placeholder="Email address"
               />
             </div>
-            <p>{errors.email?.message}</p>
+            <p className="err-message">{errors.email?.message}</p>
             <br />
             <div>
               <label className="text-gray-500 font-light mt-4 dark:text-gray-50">
@@ -222,29 +230,23 @@ const Form: React.FC<Props> = ({handleCloseModal, showModal}) => {
                 {file ? file.name : "upload"}
               </label>
             </div>
-            <p>{errors.file?.message}</p>
+            <p className="err-message">{errors.file?.message}</p>
             <br></br>
             <div>
               <label className="text-gray-500 font-light mt-4 dark:text-gray-50">
                 Price
                 <span className="text-red-500 dark:text-gray-50">:</span>
               </label>
-              <select
-                id="price"
-                onChange={handlePriceChange}
-                value={price}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option value="" disabled hidden>
-                  Choose here
-                </option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-              </select>
+              <Select
+                onChange={(selectedOption: any) => {
+                  if (selectedOption) {
+                    setPrice(selectedOption.value as string);
+                  }
+                }}
+                options={options}
+              />
             </div>
-
-            <p>{errors.price?.message}</p>
+            <p className="err-message">{errors.price?.message}</p>
           </div>
           <div className="flex items-start ">
             <input

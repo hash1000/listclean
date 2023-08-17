@@ -17,12 +17,15 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
   --tw-bg-opacity: 1;
   background-color: rgb(23 29 28 / var(--tw-bg-opacity));
   --tw-text-opacity: 1;
-  color: rgb(239 233 244 / var(--tw-text-opacity));
 }
+
+.container-wrapper {
+  color: rgb(239 233 244);
+}
+
 .payment-form {
   width: 80%;
   margin: 0 auto;
@@ -66,51 +69,57 @@ input,
 }
 
 .FormGroup {
-	margin: 0 15px 20px;
-	padding: 0;
-	border-style: none;
-	background-color: white;
-	will-change: opacity, transform;
-	box-shadow: 0 6px 9px rgba(50, 50, 93, 0.06), 0 2px 5px rgba(0, 0, 0, 0.08), inset 0 1px 0 black;
-	border-radius: 4px;
+  margin: 0 15px 20px;
+  padding: 0;
+  border-style: none;
+  background-color: white;
+  will-change: opacity, transform;
+  box-shadow: 0 6px 9px rgba(50, 50, 93, 0.06), 0 2px 5px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 black;
+  border-radius: 4px;
 }
 
 .FormRow {
-	display: -ms-flexbox;
-	display: flex;
-	-ms-flex-align: center;
-	align-items: center;
-	margin-left: 15px;
-	border-top: 1px solid #819efc;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-left: 15px;
+  border-top: 1px solid #819efc;
 }
 
 .StripeElement--webkit-autofill {
-	background: transparent !important;
+  background: transparent !important;
 }
 
 .StripeElement {
-	width: 100%;
-	padding: 11px 15px;
+  width: 100%;
+  padding: 11px 15px;
 }
 
 .App {
-	margin-left: 25%;
-	margin-top: 5%;
-	margin-right: 25%;
+  margin-left: 25%;
+  margin-top: 5%;
+  margin-right: 25%;
 }
 
 h1,
 h3 {
-	text-align: center;
+  text-align: center;
 }
 
-.payment-success{
-	color: green;
-	text-align: center;
+.payment-success {
+  color: green;
+  text-align: center;
 }
-.Thank-you{
-	color: black
+.Thank-you {
+  color: black;
 }
-.error{
-	color: red
+.error {
+  color: red;
+}
+
+p.err-message {
+  opacity: 0.5;
+  font-size: 11px;
 }

@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col container-wrapper">
         <nav className="md:py-3 border-gray-100 px-4 py-1">
           <div className="mx-auto flex justify-between items-center  container">
             <Link href="/" className="flex items-center ">
@@ -55,7 +55,6 @@ export default function Home() {
                 >
                   Get Started
                 </button>
-                <Form handleCloseModal={handleModal} showModal={showModal} />
               </div>
               <p className="caption text-slate-11">No credit card required</p>
             </div>
@@ -138,6 +137,7 @@ export default function Home() {
           </span>
         </footer>
       </div>
+      <Form handleCloseModal={handleModal} showModal={showModal} />
     </>
   );
 }

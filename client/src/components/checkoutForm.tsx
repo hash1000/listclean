@@ -92,7 +92,8 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
             Payment Done!
           </h3>
           <p className="text-gray-600 my-2 text-center">
-            Thank you for completing your secure online payment.
+            You will be receiving the cleaned list in your email inbox within 12
+            hours!
           </p>
         </div>
       ) : (
