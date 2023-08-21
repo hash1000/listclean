@@ -41,7 +41,7 @@ module.exports = function (redisClient) {
   });
 
   const configuration = new Configuration({
-    apiKey: process.env.KEY,
+    apiKey: process.env.OPENAI_KEY,
   });
   const openai = new OpenAIApi(configuration);
 
@@ -107,6 +107,7 @@ module.exports = function (redisClient) {
         let inc = 0;
         for (const name of cleanedCompanyNames) {
           dataArray[inc].company_name_cleaned = name;
+          dataArray[inc].flag = dataArray[inc].company_name === name ? 1 : 0; 
           inc++;
         }
         const csv = await converter.json2csv(dataArray);
