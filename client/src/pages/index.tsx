@@ -45,7 +45,7 @@ export default function Home() {
 
             <div className="mb-10 mt-10 flex flex-col items-center gap-4">
               <p className="body">
-                Get your
+                Get your{" "}
                 <span className="font-semibold">free account today</span>
               </p>
               <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
