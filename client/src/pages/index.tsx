@@ -1,29 +1,32 @@
-"use client";
+"use client"
 
-import {useState} from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Form from "../components/form";
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import Form from "../components/form"
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
 
   const handleModal = () => {
-    setShowModal(!showModal);
-  };
+    setShowModal(!showModal)
+  }
 
   return (
     <>
       <div className="flex h-full flex-col container-wrapper">
         <nav className="md:py-3 border-gray-100 px-4 py-1">
-          <div className="mx-auto flex justify-between items-center  container">
-            <Link href="/" className="flex items-center ">
+          <div className="mx-auto flex justify-between items-center container">
+            <Link
+              href="/"
+              className="flex items-center w-24"
+            >
               <Image
-                src="/logos/favicon.png"
+                src="/images/logo.svg"
                 alt="ListClean Logo"
                 layout="responsive"
-                width={64}
-                height={20}
+                width={349}
+                height={255}
               />
             </Link>
           </div>
@@ -32,10 +35,10 @@ export default function Home() {
         <div className="w-full flex-grow px-2 sm:px-4">
           <div className="container mx-auto">
             <div className="mt-16 flex flex-col items-center gap-4">
-              <h1 className="md:display text-8xl w-full px-4 text-center md:w-[802px] md:px-0 sm:w-[601px] sm:px-0 text-4xl text-transparent bg-clip-text bg-gradient-to-br from-lightblue to-emerald">
+              <h1 className="md:display w-full font-bold px-4 text-center md:w-[802px] md:px-0 sm:w-[601px] sm:px-0 text-8xl text-transparent bg-clip-text bg-gradient-to-br from-lightblue to-emerald">
                 Humanize Your Lead Lists
               </h1>
-              <p className="text-2xl px-4 text-center text-magnolia md:w-[572px] md:px-0 sm:w-[601px] sm:px-0 text-sm">
+              <p className="text-2xl px-4 text-center md:w-[572px] md:px-0 sm:w-[601px] sm:px-0">
                 Clean the Company Names on your lead lists.
                 <br />
                 Turn &quot;ListClean Inc. &quot; into &quot; ListClean &quot;
@@ -56,41 +59,43 @@ export default function Home() {
                   Get Started
                 </button>
               </div>
-              <p className="caption text-slate-11">No credit card required</p>
             </div>
             <div className="mx-auto max-w-4xl px-6 lg:px-8 mb-2">
               <div className="mx-auto grid max-w-lg grid-cols-4 items-center gap-x-8   gap-y-12 sm:max-w-xl sm:grid-cols-4 sm:gap-x-10 sm:gap-y-14 lg:mx-0   lg:max-w-none lg:grid-cols-4">
                 <Image
                   className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-                  src="/logos/scryptgen-logo.png"
+                  src="/images/scryptgen-logo.png"
                   alt="ScryptGen"
                   width="158"
                   height="48"
                 />
                 <Image
                   className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-                  src="/logos/outboundgen-logo.png"
+                  src="/images/outboundgen-logo.png"
                   alt="OutboundGen"
                   width="158"
                   height="48"
                 />
                 <Image
                   className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-                  src="/logos/leadbird-logo.png"
+                  src="/images/leadbird-logo.png"
                   alt="Leadbird"
                   width="158"
                   height="48"
                 />
                 <Image
                   className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1"
-                  src="/logos/reflow-logo.svg"
+                  src="/images/reflow-logo.svg"
                   alt="Reflow"
                   width="158"
                   height="48"
                 />
               </div>
 
-              <video controls className="w-8/12 mx-auto rounded-lg mt-10">
+              <video
+                controls
+                className="w-8/12 mx-auto rounded-lg mt-10"
+              >
                 <source
                   src="https://www.youtube.com/watch?v=g9KoLtojByY&pp=ygUIbGlsIGJhYnk%3D"
                   type="video/mp4"
@@ -107,7 +112,7 @@ export default function Home() {
                     Clean Your Company Names to Personalize Your Outreach Better
                   </p>
                   <p className="text-md text-magnolia/50">
-                    When sending outbound outreach, it &apos; s important to
+                    When sending outbound outreach, it&apos;s important to
                     humanize your outreach as much as possible, to make it seem
                     like the message was crafted specifically for each prospect.
                     In a real conversation, no one refers to their company or
@@ -116,7 +121,7 @@ export default function Home() {
                   </p>
                 </div>
                 <Image
-                  src="/logos/listclean-results.svg"
+                  src="/images/listclean-results.svg"
                   alt="ListClean Results"
                   width="158"
                   height="48"
@@ -130,14 +135,20 @@ export default function Home() {
         <footer className="bg-transparent p-8">
           <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
             © 2023
-            <Link href="/" className="hover:underline">
+            <Link
+              href="/"
+              className="hover:underline"
+            >
               ListClean
             </Link>
             All Rights Reserved.
           </span>
         </footer>
       </div>
-      <Form handleCloseModal={handleModal} showModal={showModal} />
+      <Form
+        handleCloseModal={handleModal}
+        showModal={showModal}
+      />
     </>
-  );
+  )
 }

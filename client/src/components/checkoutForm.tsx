@@ -1,34 +1,34 @@
-import React, { useState } from "react";
-import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
-import axios from "axios";
-import Failed from "../../public/logos/failed-icon.svg";
-import Image from "next/image";
-import {StripeCardElement} from "@stripe/stripe-js";
-import {useToast} from "../utils/toastContext";
+import React, { useState } from "react"
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js"
+import axios from "axios"
+import Failed from "../../public/images/failed-icon.svg"
+import Image from "next/image"
+import { StripeCardElement } from "@stripe/stripe-js"
+import { useToast } from "../utils/toastContext"
 
 interface PaymentFormProps {
-  amount: number;
-  email: string;
-  file: File;
-  name: string;
+  amount: number
+  email: string
+  file: File
+  name: string
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
-  const {amount, email, file, name} = props;
-  const [success, setSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const stripe = useStripe()!;
-  const elements = useElements()!;
-  const {showToast} = useToast();
+  const { amount, email, file, name } = props
+  const [success, setSuccess] = useState(false)
+  const [showError, setShowError] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const stripe = useStripe()!
+  const elements = useElements()!
+  const { showToast } = useToast()
 
   const CARD_OPTIONS = {
     hidePostalCode: true,
-  };
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
+    event.preventDefault()
+    setIsSubmitting(true)
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/create-payment-intent`,
       {
@@ -37,43 +37,47 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         email,
         name,
       }
-    );
-    const { paymentIntentId } = response.data;
+    )
+    const { paymentIntentId } = response.data
     if (response.data.clientSecret) {
-      const clientSecret = response.data.clientSecret;
+      const clientSecret = response.data.clientSecret
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement) as StripeCardElement,
         },
-      });
+      })
       if (paymentResult.error) {
-        console.error(paymentResult.error);
-        setShowError(true);
+        console.error(paymentResult.error)
+        setShowError(true)
       } else if (paymentResult.paymentIntent.status === "succeeded") {
-        setSuccess(true);
+        setSuccess(true)
         try {
           const formData = {
             name,
             email,
             file,
             paymentIntentId,
-          };
-          await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/formdata`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          showToast("Soon sanitized file will be sent to your email");
+          }
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/formdata`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          showToast("Soon sanitized file will be sent to your email")
         } catch (error) {
-          console.log("error", error);
+          console.log("error", error)
         }
       }
     } else {
-      setShowError(true);
+      setShowError(true)
     }
 
-    setIsSubmitting(false);
-  };
+    setIsSubmitting(false)
+  }
 
   return (
     <>
@@ -98,7 +102,10 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         </div>
       ) : (
         !showError && (
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col items-center"
+            onSubmit={handleSubmit}
+          >
             <CardElement options={CARD_OPTIONS} />
             <button
               disabled={!stripe || isSubmitting}
@@ -115,7 +122,12 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
           className="text-red-700 px-4 py-3 rounded relative text-center"
           role="alert"
         >
-          <Image className="m-auto" priority src={Failed} alt="Cancel" />
+          <Image
+            className="m-auto"
+            priority
+            src={Failed}
+            alt="Cancel"
+          />
           <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
             Transaction failed!
           </h3>
@@ -131,7 +143,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default PaymentForm;
+export default PaymentForm
