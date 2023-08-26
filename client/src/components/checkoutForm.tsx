@@ -30,7 +30,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
     event.preventDefault();
     setIsSubmitting(true);
     const response = await axios.post(
-      "http://localhost:8080/create-payment-intent",
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/create-payment-intent`,
       {
         amount,
         currency: "usd",
@@ -58,7 +58,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props: PaymentFormProps) => {
             file,
             paymentIntentId,
           };
-          await axios.post("http://localhost:8080/formdata", formData, {
+          await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/formdata`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
