@@ -17,8 +17,7 @@ app.use("/uploads", express.static("uploads"));
 
 // Pass redisClient to fileUploadRoutes
 const redisClient = redis.createClient({
-  host: "localhost",
-  port: 6379,
+  url: process.env.REDIS
 });
 
 redisClient.on("error", (err) => {

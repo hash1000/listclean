@@ -2,9 +2,18 @@
     "version": 2,
     "name": "server",
     "builds": [
-       { "src": "server.js", "use": "@vercel/node" }
+      { "src": "server.js", "use": "@vercel/node" }
     ],
     "routes": [
-       { "src": "/(.*)", "dest": "/server.js" }
-    ]
- }
+      { "src": "/(.*)", "dest": "/server.js" }
+    ],
+    "env": {
+      "OPENAI_KEY": "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",
+      "PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_51NbOT7KnLMFZGTAgUuxlMBRN3QQIO0heV2zzInAymqVzSxuZe8dCloV9MdGDEquqGqiki6Pl9rMTxKByaUUQeDBB00FmZorlFO",
+      "STRIPE_SECRET_KEY": "sk_test_51NbOT7KnLMFZGTAgyk5EMtD8EvcxjFvc4SV282z0J0uc6UaJiv1uIyTYjZJeoZ7guKLNu48k37HEh6c2EoXM4ktv00FMxfBOEk",
+      "PORT": "8080",
+      "REDIS": "redis://default:nU5KMFGzjC23YKUPlDff3zgbyI55LD0p@redis-17690.c73.us-east-1-2.ec2.cloud.redislabs.com:17690",
+      "RESEND_ACCESS_TOKEN": "re_86VZTqnV_Mm9GajQF5KNWXBn4Baweh4UY"
+    }
+  }
+  
